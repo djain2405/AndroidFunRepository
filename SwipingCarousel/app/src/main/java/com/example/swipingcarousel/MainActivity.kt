@@ -5,12 +5,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.swipingcarousel.databinding.ActivityMainBinding
 import com.example.swipingcarousel.databinding.ItemPagerViewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+
+    private var myViewPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+            binding.lottieView.motionLayout.setCurrentProgress((position+positionOffset)/5)
+
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -18,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewPagerView.apply {
             adapter = MyViewPagerAdapter()
             isUserInputEnabled = false
+            registerOnPageChangeCallback(myViewPageChangeCallback)
         }
 
         TabLayoutMediator(binding.indicatorTabLayout, binding.viewPagerView) {
